@@ -21,19 +21,33 @@ def add_player(user: aiogram.types.user.User):
     user_id = user.id
     if username not in players:
         print('Add new player: ', username)
-        players[username] = str(PLAYER_STATE(PLAYER_STATE.IDLE)) + ';NoRoom;' + str(user_id)
+        players[username] = str(PLAYER_STATE(PLAYER_STATE.IDLE)) + ';NoRoom;' + str(user_id) + ';en'
     else:
         print(f'Player already exist: {username}; Data: {players[username]}')
 
+def get_player_lang(username):
+    return players[username].split(';')[3]
+
+def get_player_name(user_id):
+    for player in players:
+        data = players[player].split(';')
+        if str(data[2]) == str(user_id):
+            return player
+    return 'None'
+
+def set_player_lang(username, lang):
+    players[username] = players[username].split(';')[0] + ';' + players[username].split(';')[1] + ';' + str(players[username].split(';')[2]) + ';' + lang
+
 def set_player_state(username, state: PLAYER_STATE):
     print('new state: ', state)
-    players[username] = str(PLAYER_STATE(state)) + ';' + players[username].split(';')[1] + ';' + str(players[username].split(';')[2])
+    players[username] = str(PLAYER_STATE(state)) + ';' + players[username].split(';')[1] + ';' + str(players[username].split(';')[2]) + ';' + str(players[username].split(';')[3])
     print(f'set {username} state ', players[username])
 
 def set_player_room(username, room_id):
     state = players[username].split(';')[0]
     user_id = players[username].split(';')[2]
-    players[username] = str(state) + ';' + str(room_id) + ';' + str(user_id)
+    user_lang = players[username].split(';')[3]
+    players[username] = str(state) + ';' + str(room_id) + ';' + str(user_id)  + ';' + str(user_lang)
 
 def get_player_state(username):
     state = players[username].split(';')[0]
